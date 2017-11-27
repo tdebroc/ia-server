@@ -8,6 +8,7 @@ import com.grooptown.snorkunking.security.SecurityUtils;
 import com.grooptown.snorkunking.service.MailService;
 import com.grooptown.snorkunking.service.UserService;
 import com.grooptown.snorkunking.service.dto.UserDTO;
+import com.grooptown.snorkunking.service.game.Game;
 import com.grooptown.snorkunking.web.rest.errors.*;
 import com.grooptown.snorkunking.web.rest.vm.KeyAndPasswordVM;
 import com.grooptown.snorkunking.web.rest.vm.ManagedUserVM;
@@ -185,5 +186,12 @@ public class AccountResource {
         return !StringUtils.isEmpty(password) &&
             password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
             password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
+    }
+
+    @GetMapping("/game")
+    public String getNewGame(@RequestParam(required = false) Integer oxygenFactor,
+                           @RequestParam(required = false) Integer caveCount) {
+
+        return "TEST" + oxygenFactor;
     }
 }

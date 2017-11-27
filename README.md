@@ -127,3 +127,13 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 [Swagger-Codegen]: https://github.com/swagger-api/swagger-codegen
 [Swagger-Editor]: http://editor.swagger.io
 [Doing API-First development]: http://www.jhipster.tech/documentation-archive/v4.10.1/doing-api-first-development/
+
+## More
+
+To run:
+
+    ./mvnw -Dstart-class=com.grooptown.snorkunking.IaserversnorkunkingApp
+
+Swagger:
+http://localhost:8080/swagger-ui/index.html#/ia-connector-resource
+
