@@ -12,7 +12,7 @@
     "authenticationType": "jwt",
     "hibernateCache": "no",
     "clusteredHttpSession": false,
-    "websocket": false,
+    "websocket": true,
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
     "prodDatabaseType": "mysql",
