@@ -17,6 +17,8 @@ public class Game {
 
     private boolean isStarted;
 
+    private boolean isFinished;
+
     private int oxygen = 3;
 
     private int caveCount = 3;
@@ -28,6 +30,8 @@ public class Game {
     private List<Cave> caves = new ArrayList<>();
 
     int currentStageIndex = 0;
+
+    private List<Player> leaderboard;
 
     public Game(int oxygenFactor, int caveCount) {
         this.caveCount = caveCount;
@@ -63,13 +67,31 @@ public class Game {
         return levelCount;
     }
 
+    public void startGame() {
+        getCurrentStage().initStage(this);
+        getCurrentStage().prepareMove(this);
+        setStarted(true);
+    }
+
     public void launch() {
         for (Stage stage: stages) {
             stage.playStage(this);
-            currentStageIndex++;
+            afterStage();
         }
-        List<Player> players = getLeaderBoard();
-        displayResults(players);
+        endGame();
+    }
+
+    public void afterStage() {
+        currentStageIndex++;
+        if (currentStageIndex >= stages.size()) {
+            endGame();
+        }
+    }
+
+    public void endGame() {
+        isFinished = true;
+        leaderboard = getLeaderBoard();
+        displayResults(leaderboard);
     }
 
     public List<Player> getLeaderBoard() {
@@ -96,30 +118,41 @@ public class Game {
         }
     }
 
-    public void displayGame() {
+    public String displayGame() {
+        StringBuilder display = new StringBuilder();
         Stage currentStage = stages.get(currentStageIndex);
-        System.out.println("=================================");
-        System.out.println("= Stage " + (currentStageIndex + 1) + " - Turn " + currentStage.getTurn() + "  =");
-        System.out.println("=================================");
-        System.out.println("Oxygen is : " + currentStage.getOxygen());
+        display.append("=================================\n");
+        display.append("= Stage " + (currentStageIndex + 1) + " - Turn " + currentStage.getTurn() + "  =\n");
+        display.append("=================================\n");
+        display.append("Oxygen is : " + currentStage.getOxygen() + "\n");
         for (Player player : players) {
-            System.out.println(player.getName() + " has " + player.getTreasureCount() + " treasures and holding " + player.getChestsHolding().size() + " chests.");
+            display.append(player.getName() + " has " + player.getTreasureCount() + " treasures and holding " + player.getChestsHolding().size() + " chests.\n");
         }
 
-        System.out.println("\nOn surface, there is : " +
-                (getPlayersAtSurface().size() == 0 ? "Nobody" : getPlayersAtSurface()));
+        display.append("\nOn surface, there is : " +
+                (getPlayersAtSurface().size() == 0 ? "Nobody" : getPlayersAtSurface()) + "\n");
 
         for (int c = 0; c < caves.size(); c++) {
             Cave cave = caves.get(c);
-            System.out.println("\nCave : " + cave.getName());
+            display.append("\nCave : " + cave.getName() + "\n");
             for (int l = 0; l < cave.getLevels().size(); l++) {
-                System.out.print("Level " + (l+1) + " : " + cave.getLevels().get(l).getChests());
+                display.append("Level " + (l+1) + " : " + cave.getLevels().get(l).getChests() + "");
                 if (getPlayersInLevel(c, l).size() != 0) {
-                    System.out.print(" There is : " + getPlayersInLevel(c, l));
+                    display.append(" There is : " + getPlayersInLevel(c, l) + "");
                 }
-                System.out.println("");
+                display.append("\n");
             }
         }
+        return display.toString();
+    }
+
+    public String getAsString() {
+        return displayGame();
+    }
+
+    public int getCurrentIdPlayerTurn() {
+        Stage currentStage = getCurrentStage();
+        return currentStage.getCurrentIdPlayerTurn();
     }
 
     public List<Player> getPlayersAtSurface() {
@@ -186,4 +219,14 @@ public class Game {
     public void setStarted(boolean started) {
         isStarted = started;
     }
+
+    public List<Player> getLeaderboard() {
+        return leaderboard;
+    }
+
+    public void setLeaderboard(List<Player> leaderboard) {
+        this.leaderboard = leaderboard;
+    }
+
+
 }

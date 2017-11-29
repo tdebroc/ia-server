@@ -24,6 +24,9 @@ public class GoUpMove implements Move {
         if (player.getLevelIndex() == 0 && player.getCaveIndex() == 0) {
             player.setCaveIndex(null);
             player.setLevelIndex(null);
+            if (player.getChestsHolding().size() > 0) {
+                player.openChests();
+            }
         } else if (player.getLevelIndex() == 0 ) {
             player.setCaveIndex(player.getCaveIndex() - 1);
             player.setLevelIndex(game.getCaves().get(player.getCaveIndex()).getLevels().size() - 1);

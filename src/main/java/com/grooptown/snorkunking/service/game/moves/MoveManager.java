@@ -16,19 +16,22 @@ public class MoveManager {
     public static Move askNextMove(Game game, Player player) {
         Move move;
         do {
-            move = getNextMove(player);
+            move = getNextMoveFromCommandLine(player);
         } while (!isValidMove(move, game, player));
         return move;
     }
 
-    public static Move getNextMove(Player player) {
+    public static Move getNextMoveFromCommandLine(Player player) {
         System.out.println("\nPlayer " + player.getName() + " it's your turn. Please chose a move by entering a number:");
         System.out.println("1. Go Up.");
         System.out.println("2. Go Down.");
         System.out.println("3. Pick Treasure. (If you want another than the first one, precise the number of the treasure from 1 to N. i.e.: '3 2' to take the 2sd treasure).");
         System.out.println("4. Do Nothing.");
         String line = scan.nextLine();
+        return getNextMove(line);
+    }
 
+    public static Move getNextMove(String line) {
         if (line.length() == 0) {
             System.err.println("Invalid input");
             return null;

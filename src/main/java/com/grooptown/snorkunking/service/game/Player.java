@@ -1,5 +1,7 @@
 package com.grooptown.snorkunking.service.game;
 
+import groovy.transform.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -7,6 +9,7 @@ import java.util.UUID;
 /**
  * Created by thibautdebroca on 11/11/2017.
  */
+@ToString
 public class Player {
 
     private String uniqueID = UUID.randomUUID().toString();
@@ -97,6 +100,15 @@ public class Player {
         result = 31 * result + (caveIndex != null ? caveIndex.hashCode() : 0);
         result = 31 * result + (levelIndex != null ? levelIndex.hashCode() : 0);
         return result;
+    }
+
+    public void openChests() {
+        int newTreasures = 0;
+        for (Chest chest : getChestsHolding()) {
+            newTreasures += chest.getTreasureCount();
+        }
+        setTreasureCount(getTreasureCount() + newTreasures);
+        setChestsHolding(new ArrayList<>());
     }
 
 

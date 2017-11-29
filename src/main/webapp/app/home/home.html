@@ -1,12 +1,73 @@
-<center><h1 >Game Snorkunking !</h1></center>
+<style>
+    .moveUp {
+        margin-top: 3px;
+        margin-left: -3px;
+        font-size: 50px !important;
+    }
+    .moveDown {
+        margin-top: 6px;
+        margin-left: -3px;
+        font-size: 50px !important;
+    }
+    .movePick {
+        margin-top: 7px;
+        margin-left: 2px;
+        font-size: 42px !important;
+    }
+</style>
+<center><h1 >Snorkunking</h1></center>
 <div ng-cloak>
     <div class="row">
         <div class="col-md-8">
-            Left
+            <h3>=> Game {{ currentIdGame }}</h3>
+            <p style="white-space: pre;">{{ currentGame.asString }}</p>
         </div>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <div class="col-md-4">
             <h1 >Menu:</h1>
 
+            <md-button class="md-raised md-primary" ng-click="createGame()">
+                + Create New Game !
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="addPlayer()"
+                    ng-hide="currentGame.started">
+                + Add Player
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="startGame()"
+                       ng-hide="currentGame.started">
+                + Start Game
+            </md-button>
+
+            <div ng-repeat="player in currentGame.players track by $index">
+                {{player.name}} has
+                {{player.treasureCount}} treasures and hold {{player.chestsHolding.length}} chests.
+
+                {{currentGame.currentIdPlayerTurn}}
+
+                <div ng-if="$index == currentGame.currentIdPlayerTurn">
+                    It's your Turn !
+                    Choose your action:
+
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(1, $index)">
+                        <i class="material-icons moveUp">keyboard_arrow_up</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(2, $index)">
+                        <i class="material-icons moveDown">keyboard_arrow_down</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(3, $index)">
+                        <i class="material-icons movePick">add_box</i>
+                    </md-button>
+
+
+                    </div>
+                </div>
+            </div>.
+
+            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)">
+                <div class="md-list-item-text" layout="column">
+                    <h3>=> Game {{ game }}</h3>
+                </div>
+            </md-list-item>
         </div>
     </div>
 </div>

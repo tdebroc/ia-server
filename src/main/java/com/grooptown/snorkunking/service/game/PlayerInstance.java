@@ -1,11 +1,14 @@
 package com.grooptown.snorkunking.service.game;
 
+import groovy.transform.ToString;
+
 import java.util.Date;
 
 
 /**
  * Created by thibautdebroca on 26/11/2017.
  */
+@ToString
 public class PlayerInstance {
     private int idGame;
     private String UUID;
@@ -49,5 +52,9 @@ public class PlayerInstance {
 
     public void setTimeStart(Date timeStart) {
         this.timeStart = timeStart;
+    }
+
+    public Player getPlayerFromInstance(Game game) {
+        return game.getPlayers().get(getIdPlayer());
     }
 }

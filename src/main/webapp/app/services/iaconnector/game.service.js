@@ -3,12 +3,12 @@
 
     angular
         .module('iaserversnorkunkingApp')
-        .factory('IAConnector', IAConnector);
+        .factory('IAConnectorGame', IAConnectorGame);
 
-    IAConnector.$inject = ['$resource'];
+    IAConnectorGame.$inject = ['$resource'];
 
-    function IAConnector ($resource) {
-        var service = $resource('api/iaconnector/game/:gameId', {gameId:'@gameId'}, {
+    function IAConnectorGame ($resource) {
+        var service = $resource('api/iaconnector/game/:idGame', {idGame:'@idGame'}, {
             'get': { method: 'GET', params: {}, isArray: false}
         });
 

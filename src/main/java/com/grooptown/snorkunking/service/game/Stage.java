@@ -14,24 +14,48 @@ public class Stage {
 
     private int oxygen;
 
-    private int turn = 0;
+    private int turn = 1;
+
+    private int currentIdPlayerTurn = -1;
+
+    List<Player> playersLeftToPlay = new ArrayList<>();
+
+    public void initStage(Game game) {
+        playersLeftToPlay = new ArrayList<>();
+        putPlayersAtSurface(game);
+    }
+
+    public void prepareMove(Game game) {
+        if (playersLeftToPlay.size() == 0) {
+            playersLeftToPlay.addAll(game.getPlayers());
+            turn++;
+        }
+        if (oxygen <= 0) {
+            endStage(game);
+        }
+        pickAndSetNextPlayerId(game);
+    }
 
     public void playStage(Game game) {
-        List<Player> currentPlayers = new ArrayList<>();
-        putPlayersAtSurface(game);
+        initStage(game);
         while (oxygen > 0) {
-            if (currentPlayers.size() == 0) {
-                currentPlayers.addAll(game.getPlayers());
-                turn++;
-            }
-            Player player = pickNextPlayer(currentPlayers);
+            Player player = pickNextPlayer();
             game.displayGame();
             Move move = MoveManager.askNextMove(game, player);
             move.playMove(game, player);
+            if (playersLeftToPlay.size() == 0) {
+                playersLeftToPlay.addAll(game.getPlayers());
+                turn++;
+            }
         }
+        endStage(game);
+    }
+
+    public void endStage(Game game) {
         makeChestFolds(game);
         calculateScore(game);
         removeLevelsWithNoChests(game);
+        game.afterStage();
     }
 
     private void removeLevelsWithNoChests(Game game) {
@@ -63,12 +87,7 @@ public class Stage {
 
     private void calculateScore(Game game) {
         for (Player player : game.getPlayers()) {
-            int newTreasures = 0;
-            for (Chest chest : player.getChestsHolding()) {
-                newTreasures += chest.getTreasureCount();
-            }
-            player.setTreasureCount(player.getTreasureCount() + newTreasures);
-            player.setChestsHolding(new ArrayList<>());
+            player.openChests();
         }
     }
 
@@ -82,11 +101,22 @@ public class Stage {
     }
 
 
-    public Player pickNextPlayer(List<Player> currentPlayers) {
+    public int pickAndSetNextPlayerId(Game game) {
+        Player nextPlayer = pickNextPlayer();
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            if (nextPlayer.equals(game.getPlayers().get(i))) {
+                currentIdPlayerTurn = i;
+                return currentIdPlayerTurn;
+            }
+        }
+        return -1;
+    }
+
+    public Player pickNextPlayer() {
         List<Player> playerAtLowestLevel = new ArrayList<>();
         Integer lowestLevel = null;
         Integer lowestCave = null;
-        for (Player player : currentPlayers) {
+        for (Player player : playersLeftToPlay) {
             if (player.getCaveIndex() == lowestCave
                     && lowestLevel == player.getLevelIndex()) {
                 playerAtLowestLevel.add(player);
@@ -104,7 +134,7 @@ public class Stage {
             }
         }
         Player player = playerAtLowestLevel.get((int) (Math.random() * playerAtLowestLevel.size()));
-        currentPlayers.remove(player);
+        playersLeftToPlay.remove(player);
         return player;
     }
 
@@ -132,4 +162,10 @@ public class Stage {
         this.oxygen -= oxygen;
     }
 
+    public int getCurrentIdPlayerTurn() {
+        return currentIdPlayerTurn;
+    }
+    public void setCurrentIdPlayerTurn(int currentIdPlayerTurn) {
+        currentIdPlayerTurn = currentIdPlayerTurn;
+    }
 }
