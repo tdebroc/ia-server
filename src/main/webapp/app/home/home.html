@@ -18,12 +18,14 @@
 <center><h1 >Snorkunking</h1></center>
 <div ng-cloak>
     <div class="row">
-        <div class="col-md-8">
-            <h3>=> Game {{ currentIdGame }}</h3>
-            <p style="white-space: pre;">{{ currentGame.asString }}</p>
+        <div class="col-md-6" >
+            <div style="margin: 10px; ">
+                <h3>=> Game {{ currentIdGame }}</h3>
+                <p style="white-space: pre;">{{ currentGame.asString }}</p>
+            </div>
         </div>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h1 >Menu:</h1>
 
             <md-button class="md-raised md-primary" ng-click="createGame()">

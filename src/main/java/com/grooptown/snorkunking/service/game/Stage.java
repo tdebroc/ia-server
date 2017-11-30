@@ -23,6 +23,7 @@ public class Stage {
     public void initStage(Game game) {
         playersLeftToPlay = new ArrayList<>();
         putPlayersAtSurface(game);
+        prepareMove(game);
     }
 
     public void prepareMove(Game game) {
@@ -30,10 +31,10 @@ public class Stage {
             playersLeftToPlay.addAll(game.getPlayers());
             turn++;
         }
+        pickAndSetNextPlayerId(game);
         if (oxygen <= 0) {
             endStage(game);
         }
-        pickAndSetNextPlayerId(game);
     }
 
     public void playStage(Game game) {

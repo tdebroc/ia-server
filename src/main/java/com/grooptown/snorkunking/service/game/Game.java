@@ -69,7 +69,6 @@ public class Game {
 
     public void startGame() {
         getCurrentStage().initStage(this);
-        getCurrentStage().prepareMove(this);
         setStarted(true);
     }
 
@@ -82,9 +81,11 @@ public class Game {
     }
 
     public void afterStage() {
-        currentStageIndex++;
-        if (currentStageIndex >= stages.size()) {
+        if (currentStageIndex == stages.size() - 1) {
             endGame();
+        } else {
+            currentStageIndex++;
+            getCurrentStage().initStage(this);
         }
     }
 
@@ -107,15 +108,17 @@ public class Game {
         return leaderBoard;
     }
 
-    private void displayResults(List<Player> leaderBoard) {
-        System.out.println("=================================");
-        System.out.println("= The End =");
-        System.out.println("=================================");
-        System.out.println("The Winner is " + leaderBoard.get(0).getName() + " with " + leaderBoard.get(0).getTreasureCount() + " treasures");
-        System.out.println("Second is " + leaderBoard.get(1).getName() + " with " + leaderBoard.get(1).getTreasureCount() + " treasures");
+    private String displayResults(List<Player> leaderBoard) {
+        StringBuilder display = new StringBuilder();
+        display.append("=================================\n");
+        display.append("= The End =\n");
+        display.append("=================================\n");
+        display.append("The Winner is " + leaderBoard.get(0).getName() + " with " + leaderBoard.get(0).getTreasureCount() + " treasures\n");
+        display.append("Second is " + leaderBoard.get(1).getName() + " with " + leaderBoard.get(1).getTreasureCount() + " treasures\n");
         for (int i = 2; i < leaderBoard.size(); i++) {
-            System.out.println(i + "th is " + leaderBoard.get(i).getName() + " with " + leaderBoard.get(i).getTreasureCount() + " treasures");
+            display.append(i + "th is " + leaderBoard.get(i).getName() + " with " + leaderBoard.get(i).getTreasureCount() + " treasures\n");
         }
+        return display.toString();
     }
 
     public String displayGame() {
@@ -124,6 +127,9 @@ public class Game {
         display.append("=================================\n");
         display.append("= Stage " + (currentStageIndex + 1) + " - Turn " + currentStage.getTurn() + "  =\n");
         display.append("=================================\n");
+        if (isFinished) {
+            display.append(displayResults(getLeaderBoard()));
+        }
         display.append("Oxygen is : " + currentStage.getOxygen() + "\n");
         for (Player player : players) {
             display.append(player.getName() + " has " + player.getTreasureCount() + " treasures and holding " + player.getChestsHolding().size() + " chests.\n");
@@ -143,6 +149,7 @@ public class Game {
                 display.append("\n");
             }
         }
+
         return display.toString();
     }
 
@@ -229,4 +236,11 @@ public class Game {
     }
 
 
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
+    }
 }

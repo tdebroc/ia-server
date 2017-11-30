@@ -32,8 +32,7 @@ public class IAConnectorResource {
 
     public IAConnectorResource() {
         createNewGame(3, 3);
-        gamesMap.get(1).addPlayer("Player 1");
-        gamesMap.get(1).addPlayer("Player 2");
+
     }
 
     @GetMapping("/game")
@@ -98,6 +97,9 @@ public class IAConnectorResource {
         }
         if (!game.isStarted()) {
             return sendBadRequest("Game has not started.");
+        }
+        if (game.isFinished()) {
+            return sendBadRequest("Game is Finished.");
         }
         if (!playersInstances.containsKey(playerUUID)) {
             return sendBadRequest("Unknown player");
