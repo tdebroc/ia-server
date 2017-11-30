@@ -33,7 +33,7 @@ public class Game {
 
     private List<Player> leaderboard;
 
-    public Game(int oxygenFactor, int caveCount) {
+    public Game(Double oxygenFactor, int caveCount) {
         this.caveCount = caveCount;
         int maxLevel = (caveCount + 1) * caveCount;
         int treasureCount = 1;
@@ -47,7 +47,7 @@ public class Game {
             caves.add(new Cave(name, levelCountMin, levelCountMax, minTreasureCount, maxTreasureCount));
             treasureCount += 2;
         }
-        int oxygen = countLevels() * oxygenFactor;
+        int oxygen = (int) (countLevels() * oxygenFactor);
 
         for (int i = 0; i < caveCount; i++) {
             stages.add(new Stage(oxygen));

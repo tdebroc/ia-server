@@ -14,6 +14,10 @@
             }).then(callback, callbackError);
         }
         return {
+            createGame : function (oxygenFactor, caveCount) {
+                return $http.get('/api/iaconnector/game?oxygenFactor='
+                        + oxygenFactor + '&caveCount=' + caveCount);
+            },
             getGames : function (callback) {
                         $http.get('/api/iaconnector/games').then(callback);
             },

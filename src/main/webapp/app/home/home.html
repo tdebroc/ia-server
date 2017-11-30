@@ -22,22 +22,32 @@
             <div style="margin: 10px; ">
                 <h3>=> Game {{ currentIdGame }}</h3>
                 <p style="white-space: pre;">{{ currentGame.asString }}</p>
+
             </div>
         </div>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <div class="col-md-6">
             <h1 >Menu:</h1>
+            <md-input-container>
+                <label>Oxygen Factor</label>
+                <input type="number" ng-model="oxygenFactor" placeholder="oxygenFactor" id="oxygenFactor"/>
+            </md-input-container>
+            <md-input-container>
+                <label>Cave Count</label>
+                <input type="number" ng-model="caveCount" placeholder="caveCount" id="caveCount"/>
+            </md-input-container>
 
             <md-button class="md-raised md-primary" ng-click="createGame()">
                 + Create New Game !
             </md-button>
             <md-button class="md-raised md-primary" ng-click="addPlayer()"
-                    ng-hide="currentGame.started">
+            ng-hide="currentGame.started">
                 + Add Player
             </md-button>
             <md-button class="md-raised md-primary" ng-click="startGame()"
                        ng-hide="currentGame.started">
-                + Start Game
+                <i class="material-icons" style="position: absolute;top: 5px;">play_arrow</i>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Game
             </md-button>
 
             <div ng-repeat="player in currentGame.players track by $index">

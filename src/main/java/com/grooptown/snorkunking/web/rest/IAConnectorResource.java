@@ -31,12 +31,11 @@ public class IAConnectorResource {
     public static Map<String, PlayerInstance> playersInstances = new HashMap<>();
 
     public IAConnectorResource() {
-        createNewGame(3, 3);
-
+        createNewGame(2.0, 3);
     }
 
     @GetMapping("/game")
-    public Game createNewGame(@RequestParam(required = false) Integer oxygenFactor,
+    public Game createNewGame(@RequestParam(required = false) Double oxygenFactor,
                            @RequestParam(required = false) Integer caveCount) {
         int idGame = addGameToGamesMap(oxygenFactor, caveCount);
         return gamesMap.get(idGame);
@@ -125,8 +124,9 @@ public class IAConnectorResource {
         // TODO
     }
 
-    public int addGameToGamesMap(Integer oxygenFactor, Integer caveCount) {
-        Game game = new Game(oxygenFactor == null ? 2 : oxygenFactor,
+    public int addGameToGamesMap(Double oxygenFactor, Integer caveCount) {
+        System.out.println("oxygenFactor=" + oxygenFactor + " and caveCount=" +caveCount);
+        Game game = new Game(oxygenFactor == null ? 2.0 : oxygenFactor,
                             caveCount == null ? 3 : caveCount);
         int newLyGameId = NEXT_GAME_ID;
         game.setIdGame(newLyGameId);

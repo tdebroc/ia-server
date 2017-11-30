@@ -10,7 +10,8 @@
     function HomeController ($scope, Principal, LoginService, $state, IAConnectorGame, IAConnectorService) {
 
         $scope.moves = ["Go Up", "Go Down", "Pick Treasure"];
-
+        $scope.oxygenFactor = 2.0
+        $scope.caveCount = 3
 
 
         $scope.currentPlayers = {};
@@ -32,13 +33,16 @@
 
 
         $scope.createGame = function() {
-            IAConnectorGame.get()
-                           .$promise.then(function(game) {
-                              console.log("Game is : " + JSON.stringify(game));
-                              $scope.currentGame = game;
-                              $scope.refreshGameList();
-                              $scope.currentIdGame = game.idGame;
-                           });
+            $scope.oxygenFactor = $("#oxygenFactor").val()
+            $scope.caveCount = $("#caveCount").val()
+            IAConnectorService.createGame($scope.oxygenFactor, $scope.caveCount)
+                .then(function(res) {
+                    var game = res.data;
+                    console.log("Game is : " + JSON.stringify(game));
+                    $scope.currentGame = game;
+                    $scope.refreshGameList();
+                    $scope.currentIdGame = game.idGame;
+                })
 
         }
 
