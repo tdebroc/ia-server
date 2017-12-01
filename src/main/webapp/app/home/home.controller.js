@@ -113,6 +113,17 @@
         function getKey(idGame, idPlayerTurn) {
             return idGame + "#" + idPlayerTurn;
         }
+
+        $scope.isCurrentPlayer = function(currentIdGame, idPlayerTurn) {
+            return $scope.currentPlayers[getKey(currentIdGame, idPlayerTurn)]
+        }
+
+        $scope.isPlayerTurn = function(game, idPlayerTurn) {
+            return game.started && game.currentIdPlayerTurn == idPlayerTurn && !game.finished;
+        }
+
+
     }
+
 
 })();
