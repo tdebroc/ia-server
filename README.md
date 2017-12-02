@@ -137,3 +137,6 @@ To run:
 Swagger:
 http://localhost:8080/swagger-ui/index.html#/ia-connector-resource
 
+Help:
+
+node_modules/bower/bin/bower install

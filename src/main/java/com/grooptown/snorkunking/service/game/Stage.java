@@ -14,7 +14,7 @@ public class Stage {
 
     private int oxygen;
 
-    private int turn = 1;
+    private int turn = 0;
 
     private int currentIdPlayerTurn = -1;
 
@@ -122,12 +122,15 @@ public class Stage {
                     && lowestLevel == player.getLevelIndex()) {
                 playerAtLowestLevel.add(player);
             }
-            if (player.getCaveIndex() != null && lowestCave == null ||
-                    player.getCaveIndex() != null && lowestCave == null &&
-                    player.getCaveIndex() > lowestCave ||
-                    player.getCaveIndex() != null && lowestCave == null &&
-                    player.getCaveIndex() == lowestCave &&
-                    player.getLevelIndex() > lowestLevel) {
+            if (        player.getCaveIndex() != null && lowestCave == null
+                    ||
+                        player.getCaveIndex() != null && lowestCave != null &&
+                        player.getCaveIndex() > lowestCave
+                    ||
+                        player.getCaveIndex() != null && lowestCave != null &&
+                        player.getCaveIndex() == lowestCave &&
+                        player.getLevelIndex() > lowestLevel
+                    ) {
                 playerAtLowestLevel = new ArrayList<>();
                 playerAtLowestLevel.add(player);
                 lowestLevel = player.getLevelIndex();

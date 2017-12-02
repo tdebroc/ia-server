@@ -31,9 +31,12 @@
             startGame : function (idGame) {
                 return $http.get('/api/iaconnector/startGame?idGame=' + idGame);
             },
-            sendMove : function (playerUUID, move, callback) {
+            sendMove : function (playerUUID, move) {
                  return $http.get('/api/iaconnector/sendMove?playerUUID=' + playerUUID
                             + "&move=" + move);
+            },
+            init : function () {
+                  return $http.get('/api/iaconnector/init');
             }
         }
     }

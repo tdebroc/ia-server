@@ -6,8 +6,10 @@ import com.grooptown.snorkunking.service.game.Player;
 import com.grooptown.snorkunking.service.game.PlayerInstance;
 import com.grooptown.snorkunking.service.game.moves.Move;
 import com.grooptown.snorkunking.service.game.moves.MoveManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,6 +26,9 @@ import static com.grooptown.snorkunking.service.game.moves.MoveManager.getNextMo
 @RequestMapping("/api/iaconnector")
 public class IAConnectorResource {
 
+    @Autowired
+    SimpMessageSendingOperations messagingTemplate;
+
     public static Map<Integer, Game> gamesMap = new HashMap<>();
 
     public static int NEXT_GAME_ID = 1;
@@ -31,6 +36,13 @@ public class IAConnectorResource {
     public static Map<String, PlayerInstance> playersInstances = new HashMap<>();
 
     public IAConnectorResource() {
+        init();
+    }
+
+    @GetMapping("/init")
+    public void init() {
+        NEXT_GAME_ID = 1;
+        gamesMap = new HashMap<>();
         createNewGame(2.0, 3);
     }
 
@@ -38,6 +50,7 @@ public class IAConnectorResource {
     public Game createNewGame(@RequestParam(required = false) Double oxygenFactor,
                            @RequestParam(required = false) Integer caveCount) {
         int idGame = addGameToGamesMap(oxygenFactor, caveCount);
+        refreshGames();
         return gamesMap.get(idGame);
     }
 
@@ -49,7 +62,7 @@ public class IAConnectorResource {
 
 
     @GetMapping("/games")
-    public Set<Integer> getNewGame() {
+    public Set<Integer> getGames() {
         return gamesMap.keySet();
     }
 
@@ -68,14 +81,16 @@ public class IAConnectorResource {
 
         PlayerInstance playerInstance = new PlayerInstance(idGame, game.getPlayers().size(), userId);
         game.addPlayer(playerName);
-        // refreshGame(game);
+        refreshGame(game);
         playersInstances.put(userId, playerInstance);
         return playerInstance;
     }
 
     @GetMapping(value = "/startGame")
     public boolean startGame(@RequestParam(value = "idGame") int idGame) {
-        gamesMap.get(idGame).startGame();
+        Game game = gamesMap.get(idGame);
+        game.startGame();
+        refreshGame(game);
         return true;
     }
 
@@ -120,9 +135,6 @@ public class IAConnectorResource {
         return sendValidResponse("OK");
     }
 
-    private void refreshGame(Game game) {
-        // TODO
-    }
 
     public int addGameToGamesMap(Double oxygenFactor, Integer caveCount) {
         System.out.println("oxygenFactor=" + oxygenFactor + " and caveCount=" +caveCount);
@@ -141,6 +153,18 @@ public class IAConnectorResource {
 
     public ResponseEntity<Message> sendValidResponse(String message) {
         return new ResponseEntity<>(new Message(message), HttpStatus.OK);
+    }
+
+    //==================================================================================================================
+    //= Sockets
+    //==================================================================================================================
+    private void refreshGames() {
+        if (messagingTemplate != null) {
+            messagingTemplate.convertAndSend("/topic/refreshGames", getGames());
+        }
+    }
+    private void refreshGame(Game game) {
+        messagingTemplate.convertAndSend("/topic/refreshGame", game);
     }
 
 

@@ -5,9 +5,11 @@
         .module('iaserversnorkunkingApp')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state', 'IAConnectorGame', 'IAConnectorService'];
+    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state',
+                              'IAConnectorGame', 'IAConnectorService', 'IAConnectorSocketService'];
 
-    function HomeController ($scope, Principal, LoginService, $state, IAConnectorGame, IAConnectorService) {
+    function HomeController ($scope, Principal, LoginService, $state,
+                            IAConnectorGame, IAConnectorService, IAConnectorSocketService) {
 
         $scope.moves = ["Go Up", "Go Down", "Pick Treasure"];
         $scope.oxygenFactor = 2.0
@@ -26,6 +28,35 @@
         loadCurrentPlayers();
 
         console.log("$scope.currentPlayers", $scope.currentPlayers);
+
+        //=====================================================================
+        //= Reboot
+        //=====================================================================
+        $scope.reboot = function() {
+            IAConnectorService.init();
+            localStorage.clear();
+            loadCurrentPlayers();
+            $scope.games = undefined;
+            $scope.refreshGameList();
+        }
+        //=====================================================================
+        // Sockets.
+        //=====================================================================
+        IAConnectorSocketService.connect();
+        IAConnectorSocketService.receive().then(null, null, function(game) {
+            console.log("from socket", game);
+            $scope.currentGame = game;
+            $scope.currentIdGame = game.idGame;
+            console.log()
+        });
+        IAConnectorSocketService.subscribe();
+        IAConnectorSocketService.subscribeRefreshAllGames();
+
+        IAConnectorSocketService.receiveAllGames().then(null, null, function(allGames) {
+            $scope.games = allGames;
+            console.log("from socket allGames", allGames);
+        })
+
 
         var vm = this;
         $scope.currentGame;
@@ -57,6 +88,10 @@
                  });;
         }
 
+
+
+
+
         /**
          * Refresh List of Games.
          */
@@ -84,9 +119,13 @@
                     .then(refreshCurrentGame);
         }
 
+        $scope.playerName =  chance.name({ nationality: "it" })
+
         $scope.addPlayer= function() {
             var idGame = $scope.currentIdGame;
-            var playerName = "Player " + ($scope.currentGame.players.length + 1);
+            var playerName = $("#playerName").val()
+            $scope.playerName =  chance.name({ nationality: "it" })
+
             IAConnectorService.addPlayer(idGame, playerName, function(response) {
                 var playerInstance = response.data
                 var idPlayerTurn = playerInstance.idPlayer;
@@ -115,6 +154,7 @@
         }
 
         $scope.isCurrentPlayer = function(currentIdGame, idPlayerTurn) {
+            console.log(currentIdGame, idPlayerTurn, getKey(currentIdGame, idPlayerTurn));
             return $scope.currentPlayers[getKey(currentIdGame, idPlayerTurn)]
         }
 

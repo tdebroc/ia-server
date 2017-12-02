@@ -34,9 +34,16 @@
                 <input type="number" ng-model="caveCount" placeholder="caveCount" id="caveCount"/>
             </md-input-container>
 
+
+
             <md-button class="md-raised md-primary" ng-click="createGame()">
                 + Create New Game !
             </md-button>
+            <md-input-container>
+                <label>Player Name</label>
+                <input ng-model="playerName" placeholder="Player name" id="playerName"
+                        />
+            </md-input-container>
             <md-button class="md-raised md-primary" ng-click="addPlayer()"
             ng-hide="currentGame.started">
                 + Add Player
@@ -91,3 +98,6 @@
         </div>
     </div>
 </div>
+<md-button class="md-raised md-primary" ng-click="reboot()">
+    Reboot
+</md-button>
