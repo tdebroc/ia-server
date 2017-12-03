@@ -54,15 +54,26 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Game
             </md-button>
 
+            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)"
+                          ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
+
+                <div class="md-list-item-text" layout="column">
+                    <h3>=> Game {{ game }}</h3>
+                </div>
+            </md-list-item>
+
             <div ng-repeat="player in currentGame.players track by $index">
                 {{player.name}} has
                 {{player.treasureCount}} treasures and hold {{player.chestsHolding.length}} chests.
 
                 {{currentGame.currentIdPlayerTurn}}
 
-                It's turn of {{player.name}} !
+                <div ng-if="$index == currentGame.currentIdPlayerTurn">
+                    It's turn of {{player.name}} !
+                </div>
 
                 <div ng-if="$index == currentGame.currentIdPlayerTurn && isCurrentPlayer(currentGame.idGame, currentGame.currentIdPlayerTurn)">
+
                     It's your Turn !
                     Choose your action:
 
@@ -79,14 +90,6 @@
 
                 </div>
             </div>
-
-            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)"
-                          ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
-
-                <div class="md-list-item-text" layout="column">
-                    <h3>=> Game {{ game }}</h3>
-                </div>
-            </md-list-item>
         </div>
 
         <div class="col-md-6" >

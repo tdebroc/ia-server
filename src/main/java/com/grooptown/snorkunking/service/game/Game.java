@@ -2,6 +2,8 @@ package com.grooptown.snorkunking.service.game;
 
 
 
+import com.grooptown.snorkunking.service.game.moves.RecordMove;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,6 +30,8 @@ public class Game {
     private List<Player> players = new ArrayList<>();
 
     private List<Cave> caves = new ArrayList<>();
+
+    private List<RecordMove> moveList = new ArrayList<>();
 
     int currentStageIndex = 0;
 
@@ -242,5 +246,13 @@ public class Game {
 
     public void setFinished(boolean finished) {
         isFinished = finished;
+    }
+
+    public List<RecordMove> getMoveList() {
+        return moveList;
+    }
+
+    public void setMoveList(List<RecordMove> moveList) {
+        this.moveList = moveList;
     }
 }

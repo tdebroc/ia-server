@@ -6,6 +6,7 @@ import com.grooptown.snorkunking.service.game.Player;
 import com.grooptown.snorkunking.service.game.PlayerInstance;
 import com.grooptown.snorkunking.service.game.moves.Move;
 import com.grooptown.snorkunking.service.game.moves.MoveManager;
+import com.grooptown.snorkunking.service.game.moves.RecordMove;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -130,6 +131,8 @@ public class IAConnectorResource {
         }
 
         nextMove.playMove(game, player);
+        RecordMove recordMove = new RecordMove(moveString, playerInstance.getIdPlayer());
+        game.getMoveList().add(recordMove);
         game.getCurrentStage().prepareMove(game);
         refreshGame(game);
         return sendValidResponse("OK");

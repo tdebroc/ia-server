@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Level {
 
-    private List<Chest> chests;
+        private List<Chest> chests;
 
     public Level(int minTreasureCount, int maxTreasureCount) {
         chests = new ArrayList<>();
