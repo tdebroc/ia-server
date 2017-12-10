@@ -22,6 +22,8 @@ public class Player {
 
     private Integer levelIndex;
 
+    private Integer cellIndex = 0;
+
     private List<Chest> chestsHolding = new ArrayList<>();
 
     public Integer getCaveIndex() {
@@ -112,4 +114,11 @@ public class Player {
     }
 
 
+    public Integer getCellIndex() {
+        return cellIndex;
+    }
+
+    public void setCellIndex(Integer cellIndex) {
+        this.cellIndex = cellIndex;
+    }
 }

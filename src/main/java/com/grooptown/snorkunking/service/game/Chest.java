@@ -10,14 +10,12 @@ public class Chest {
 
     public Chest(int minTreasureCount, int maxTreasureCount) {
         treasureCount = (int) (Math.random() * (maxTreasureCount - minTreasureCount)) + minTreasureCount;
-        name = "Chest with " + minTreasureCount + " to " + maxTreasureCount + " treasures";
+        name = "Chest " + minTreasureCount + "->" + maxTreasureCount + " treasures";
     }
 
     @Override
     public String toString() {
-        return "Chest{" +
-                "name='" + name + '\'' +
-                '}';
+        return name;
     }
 
     public String getName() {

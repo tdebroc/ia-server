@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -44,13 +45,14 @@ public class IAConnectorResource {
     public void init() {
         NEXT_GAME_ID = 1;
         gamesMap = new HashMap<>();
-        createNewGame(2.0, 3);
+        createNewGame(2.0, 3, 3);
     }
 
     @GetMapping("/game")
     public Game createNewGame(@RequestParam(required = false) Double oxygenFactor,
-                           @RequestParam(required = false) Integer caveCount) {
-        int idGame = addGameToGamesMap(oxygenFactor, caveCount);
+                            @RequestParam(required = false) Integer caveCount,
+                            @RequestParam(required = false) Integer caveWidth) {
+        int idGame = addGameToGamesMap(oxygenFactor, caveCount, caveWidth);
         refreshGames();
         return gamesMap.get(idGame);
     }
@@ -138,11 +140,30 @@ public class IAConnectorResource {
         return sendValidResponse("OK");
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/getOpponentMoves")
+    public ResponseEntity<Game> getOpponentMoves(@RequestParam(value = "playerUUID") String playerUUID) throws URISyntaxException, InterruptedException {
+        PlayerInstance playerInstance = playersInstances.get(playerUUID);
+        if (playerInstance == null) {
+            return null;
+        }
+        Game game = gamesMap.get(playerInstance.getIdGame());
+        int timeRequest = 0;
+        while (game.getCurrentIdPlayerTurn() != playerInstance.getIdPlayer() || !game.isStarted()) {
 
-    public int addGameToGamesMap(Double oxygenFactor, Integer caveCount) {
+            Thread.sleep(100);
+            timeRequest += 100;
+            if (timeRequest > 60 * 1000 * 10) {
+                return null;
+            }
+        }
+        return new ResponseEntity<>(game, HttpStatus.OK);
+    }
+
+    public int addGameToGamesMap(Double oxygenFactor, Integer caveCount, Integer caveWidth) {
         System.out.println("oxygenFactor=" + oxygenFactor + " and caveCount=" +caveCount);
         Game game = new Game(oxygenFactor == null ? 2.0 : oxygenFactor,
-                            caveCount == null ? 3 : caveCount);
+                            caveCount == null ? 3 : caveCount,
+                            caveWidth == null ? 1 : caveWidth);
         int newLyGameId = NEXT_GAME_ID;
         game.setIdGame(newLyGameId);
         gamesMap.put(newLyGameId, game);

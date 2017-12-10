@@ -25,6 +25,8 @@ public class Game {
 
     private int caveCount = 3;
 
+    private int caveWidth;
+
     private List<Stage> stages = new ArrayList<>();
 
     private List<Player> players = new ArrayList<>();
@@ -37,7 +39,8 @@ public class Game {
 
     private List<Player> leaderboard;
 
-    public Game(Double oxygenFactor, int caveCount) {
+    public Game(Double oxygenFactor, int caveCount, int caveWidth) {
+        this.caveWidth = caveWidth;
         this.caveCount = caveCount;
         int maxLevel = (caveCount + 1) * caveCount;
         int treasureCount = 1;
@@ -48,7 +51,7 @@ public class Game {
             int minTreasureCount = treasureCount;
             treasureCount += 3;
             int maxTreasureCount = treasureCount;
-            caves.add(new Cave(name, levelCountMin, levelCountMax, minTreasureCount, maxTreasureCount));
+            caves.add(new Cave(name, levelCountMin, levelCountMax, minTreasureCount, maxTreasureCount, caveWidth));
             treasureCount += 2;
         }
         int oxygen = (int) (countLevels() * oxygenFactor);
@@ -139,22 +142,57 @@ public class Game {
             display.append(player.getName() + " has " + player.getTreasureCount() + " treasures and holding " + player.getChestsHolding().size() + " chests.\n");
         }
 
-        display.append("\nOn surface, there is : " +
-                (getPlayersAtSurface().size() == 0 ? "Nobody" : getPlayersAtSurface()) + "\n");
+        display.append("\nOn surface: ");
+        display.append(getPlayersAtSurface().size() == 0 ? "Nobody" : getPlayersAtSurface());
+        for (int cellIndex = 0; cellIndex < caveWidth; cellIndex++) {
+            // TODO print grid on surface;
+        }
 
         for (int c = 0; c < caves.size(); c++) {
             Cave cave = caves.get(c);
             display.append("\nCave : " + cave.getName() + "\n");
             for (int l = 0; l < cave.getLevels().size(); l++) {
-                display.append("Level " + (l+1) + " : " + cave.getLevels().get(l).getChests() + "");
-                if (getPlayersInLevel(c, l).size() != 0) {
-                    display.append(" There is : " + getPlayersInLevel(c, l) + "");
+
+                display.append("Level " + (l+1 < 10 ? " " : "") + (l+1) + " : ");
+                Level level = cave.getLevels().get(l);
+                for (int cellIndex = 0; cellIndex < level.getCells().size(); cellIndex++) {
+                    String content = printCellContent(c, l, cellIndex);
+                    display.append(content);
+                    display.append(printWhiteSpace(content, cellIndex));
+                    display.append("|");
                 }
                 display.append("\n");
             }
         }
 
         return display.toString();
+    }
+
+    private String printWhiteSpace(String content, int cellIndex) {
+        int width = getColumnWidth(cellIndex);
+        StringBuilder spaces = new StringBuilder();
+        for (int c = 0; c < width - content.length(); c++) {
+            spaces.append(" ");
+        }
+        return spaces.toString();
+    }
+
+    private String printCellContent(int caveIndex, int levelIndex, int cellIndex) {
+        Cell cell = caves.get(caveIndex).getLevels().get(levelIndex).getCells().get(cellIndex);
+        String content = cell.getChests().size() != 0 ? cell.getChests().toString() : "";
+        List<Player> playersInCell = getPlayersInCell(caveIndex, levelIndex, cellIndex);
+        content += playersInCell.size() != 0 ? playersInCell : "";
+        return content;
+    }
+
+    private int getColumnWidth(int cellIndex) {
+        int max = 0;
+        for (int c = 0; c < caves.size(); c++) {
+            for (int l = 0; l < caves.get(c).getLevels().size(); l++) {
+                max = Math.max(max, printCellContent(c, l, cellIndex).length());
+            }
+        }
+        return max;
     }
 
     public String getAsString() {
@@ -167,17 +205,24 @@ public class Game {
     }
 
     public List<Player> getPlayersAtSurface() {
-        return getPlayersInLevel(null, null);
-    }
-
-    public List<Player> getPlayersInLevel(Integer caveIndex, Integer levelIndex) {
         List<Player> playersInLevel = new ArrayList<>();
         for (Player player : this.players) {
-            if (player.getCaveIndex() == caveIndex && player.getLevelIndex() == levelIndex) {
+            if (player.getCaveIndex() == null && player.getLevelIndex() == null) {
                 playersInLevel.add(player);
             }
         }
         return playersInLevel;
+    }
+
+    public List<Player> getPlayersInCell(Integer caveIndex, Integer levelIndex, Integer cellIndex) {
+        List<Player> playersInCell = new ArrayList<>();
+        for (Player player : this.players) {
+            if (player.getCaveIndex() == caveIndex && player.getLevelIndex() == levelIndex &&
+                    player.getCellIndex() == cellIndex) {
+                playersInCell.add(player);
+            }
+        }
+        return playersInCell;
     }
 
     public List<Player> getPlayers() {
@@ -200,8 +245,9 @@ public class Game {
         return getCaves().size() - 1;
     }
 
-    public Level getLevel(Player player) {
-        return caves.get(player.getCaveIndex()).getLevels().get(player.getLevelIndex());
+    public Cell getCell(Player player) {
+        return caves.get(player.getCaveIndex()).getLevels().get(player.getLevelIndex())
+                    .getCells().get(player.getCellIndex());
     }
 
     public Stage getCurrentStage() {
@@ -254,5 +300,13 @@ public class Game {
 
     public void setMoveList(List<RecordMove> moveList) {
         this.moveList = moveList;
+    }
+
+    public int getCaveWidth() {
+        return caveWidth;
+    }
+
+    public void setCaveWidth(int caveWidth) {
+        this.caveWidth = caveWidth;
     }
 }

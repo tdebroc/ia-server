@@ -65,7 +65,13 @@ public class Stage {
             Iterator<Level> i = levels.iterator();
             while (i.hasNext()) {
                 Level level = i.next();
-                if (level.getChests().size() == 0) {
+                boolean chestFound = false;
+                for (int cellIndex = 0; cellIndex < level.getCells().size() && !chestFound; cellIndex++) {
+                    if (level.getCells().get(cellIndex).getChests().size() > 0 ) {
+                        chestFound = true;
+                    }
+                }
+                if (!chestFound) {
                     i.remove();
                 }
             }
@@ -83,6 +89,7 @@ public class Stage {
         for (Player player : game.getPlayers()) {
             player.setLevelIndex(null);
             player.setCaveIndex(null);
+            player.setCellIndex(0);
         }
     }
 
@@ -95,7 +102,8 @@ public class Stage {
     private void makeChestFolds(Game game) {
         for (Player player : game.getPlayers()) {
             if (player.getCaveIndex() != null && player.getLevelIndex() != null) {
-                game.getLastLevel().getChests().addAll(player.getChestsHolding());
+                game.getLastLevel().getCells().get(player.getCellIndex()).
+                            getChests().addAll(player.getChestsHolding());
                 player.setChestsHolding(new ArrayList<>());
             }
         }

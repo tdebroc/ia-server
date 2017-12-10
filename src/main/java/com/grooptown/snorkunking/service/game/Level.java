@@ -8,18 +8,24 @@ import java.util.List;
  */
 public class Level {
 
-        private List<Chest> chests;
+    private List<Cell> cells;
 
-    public Level(int minTreasureCount, int maxTreasureCount) {
-        chests = new ArrayList<>();
+    public Level(int minTreasureCount, int maxTreasureCount, int numberOfCells) {
+        cells = new ArrayList<>();
+        for (int i = 0; i < numberOfCells; i++) {
+            cells.add(new Cell());
+        }
+        int indexChests = (int) (numberOfCells * Math.random());
+        List<Chest> chests = new ArrayList<>();
         chests.add(new Chest(minTreasureCount, maxTreasureCount));
+        cells.get(indexChests).setChests(chests);
     }
 
-    public List<Chest> getChests() {
-        return chests;
+    public List<Cell> getCells() {
+        return cells;
     }
 
-    public void setChests(List<Chest> chests) {
-        this.chests = chests;
+    public void setCells(List<Cell> cells) {
+        this.cells = cells;
     }
 }

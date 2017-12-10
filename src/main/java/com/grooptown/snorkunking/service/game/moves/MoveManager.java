@@ -59,6 +59,10 @@ public class MoveManager {
                 return null;
             }
         } else if (moveIndex == 4) {
+            return new GoLeftMove();
+        } else if (moveIndex == 5) {
+            return new GoRightMove();
+        } else if (moveIndex == 6) {
             return new DoNothingMove();
         } else {
             System.err.println("Please enter a valid number");

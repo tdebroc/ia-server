@@ -17,17 +17,15 @@ public class PickTreasureMove implements Move {
 
     @Override
     public boolean isValidMove(Game game, Player player) {
-        System.out.println(game.getLevel(player));
-        System.out.println(game.getLevel(player).getChests());
         return treasureIndex >= 0
-                && treasureIndex < game.getLevel(player).getChests().size();
+                && treasureIndex < game.getCell(player).getChests().size();
     }
 
     @Override
     public void playMove(Game game, Player player) {
         game.getCurrentStage().removeOxygen(1);
-        Chest chest = game.getLevel(player).getChests().get(treasureIndex);
+        Chest chest = game.getCell(player).getChests().get(treasureIndex);
         player.addChest(chest);
-        game.getLevel(player).getChests().remove(treasureIndex);
+        game.getCell(player).getChests().remove(treasureIndex);
     }
 }

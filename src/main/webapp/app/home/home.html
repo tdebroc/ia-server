@@ -28,7 +28,7 @@
             <md-input-container>
                 <label>Oxygen Factor</label>
                 <input type="number" ng-model="oxygenFactor" placeholder="oxygenFactor" id="oxygenFactor"/>
-            </md-input-container>
+            </md-input-container>f
             <md-input-container>
                 <label>Cave Count</label>
                 <input type="number" ng-model="caveCount" placeholder="caveCount" id="caveCount"/>
@@ -83,6 +83,12 @@
                     <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(2, $index)">
                         <i class="material-icons moveDown">keyboard_arrow_down</i>
                     </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(4, $index)">
+                        <i class="material-icons moveUp">keyboard_arrow_left</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(5, $index)">
+                        <i class="material-icons moveDown">keyboard_arrow_right</i>
+                    </md-button>
                     <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(3, $index)">
                         <i class="material-icons movePick">add_box</i>
                     </md-button>
@@ -95,7 +101,7 @@
         <div class="col-md-6" >
             <div style="margin: 10px; ">
                 <h3>=> Game {{ currentIdGame }}</h3>
-                <p style="white-space: pre;">{{ currentGame.asString }}</p>
+                <p style="white-space: pre;font-family: Courier;">{{ currentGame.asString }}</p>
 
             </div>
         </div>

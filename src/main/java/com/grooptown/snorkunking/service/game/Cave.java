@@ -14,12 +14,12 @@ public class Cave {
 
 
     public Cave(String name, int levelCountMin, int levelCountMax,
-                int minTreasureCount, int maxTreasureCount) {
+                int minTreasureCount, int maxTreasureCount, int caveWidth) {
         this.name = name;
         levels = new ArrayList<>();
         int levelCount = (int) (Math.random() * (levelCountMax - levelCountMin)) + levelCountMin;
         for (int i = 0; i < levelCount; i++) {
-            levels.add(new Level(minTreasureCount, maxTreasureCount));
+            levels.add(new Level(minTreasureCount, maxTreasureCount, caveWidth));
         }
     }
 
