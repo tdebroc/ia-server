@@ -10,6 +10,9 @@ public class Level {
 
     private List<Cell> cells;
 
+    public Level() {
+
+    }
     public Level(int minTreasureCount, int maxTreasureCount, int numberOfCells) {
         cells = new ArrayList<>();
         for (int i = 0; i < numberOfCells; i++) {

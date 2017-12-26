@@ -7,6 +7,9 @@ public class RecordMove {
     private String move;
     private int idPlayer;
 
+    public RecordMove() {
+    }
+
     public RecordMove(String move, int idPlayer) {
         this.move = move;
         this.idPlayer = idPlayer;

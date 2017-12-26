@@ -2,7 +2,9 @@ package com.grooptown.snorkunking.service.game;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.grooptown.snorkunking.service.game.moves.RecordMove;
+import groovy.transform.ToString;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,6 +13,8 @@ import java.util.List;
 /**
  * Created by thibautdebroca on 11/11/2017.
  */
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Game {
 
     public static int MAX_NUM_PLAYER = 10;
@@ -38,6 +42,10 @@ public class Game {
     int currentStageIndex = 0;
 
     private List<Player> leaderboard;
+
+    public Game() {
+
+    }
 
     public Game(Double oxygenFactor, int caveCount, int caveWidth) {
         this.caveWidth = caveWidth;
@@ -98,11 +106,11 @@ public class Game {
 
     public void endGame() {
         isFinished = true;
-        leaderboard = getLeaderBoard();
+        leaderboard = calculateLeaderBoard();
         displayResults(leaderboard);
     }
 
-    public List<Player> getLeaderBoard() {
+    public List<Player> calculateLeaderBoard() {
         List<Player> leaderBoard = new ArrayList<>();
         leaderBoard.addAll(players);
         leaderBoard.sort(new Comparator<Player>() {
@@ -135,7 +143,7 @@ public class Game {
         display.append("= Stage " + (currentStageIndex + 1) + " - Turn " + currentStage.getTurn() + "  =\n");
         display.append("=================================\n");
         if (isFinished) {
-            display.append(displayResults(getLeaderBoard()));
+            display.append(displayResults(calculateLeaderBoard()));
         }
         display.append("Oxygen is : " + currentStage.getOxygen() + "\n");
         for (Player player : players) {
@@ -194,6 +202,7 @@ public class Game {
         }
         return max;
     }
+
 
     public String getAsString() {
         return displayGame();
@@ -308,5 +317,29 @@ public class Game {
 
     public void setCaveWidth(int caveWidth) {
         this.caveWidth = caveWidth;
+    }
+
+    public static int getMaxNumPlayer() {
+        return MAX_NUM_PLAYER;
+    }
+
+    public static void setMaxNumPlayer(int maxNumPlayer) {
+        MAX_NUM_PLAYER = maxNumPlayer;
+    }
+
+    public int getCaveCount() {
+        return caveCount;
+    }
+
+    public void setCaveCount(int caveCount) {
+        this.caveCount = caveCount;
+    }
+
+    public List<Stage> getStages() {
+        return stages;
+    }
+
+    public void setStages(List<Stage> stages) {
+        this.stages = stages;
     }
 }

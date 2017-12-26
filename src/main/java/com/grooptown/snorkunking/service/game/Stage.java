@@ -154,6 +154,9 @@ public class Stage {
         this.oxygen = oxygen;
     }
 
+    public Stage() {
+    }
+
     public int getOxygen() {
         return oxygen;
     }

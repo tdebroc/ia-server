@@ -14,6 +14,7 @@
         $scope.moves = ["Go Up", "Go Down", "Pick Treasure"];
         $scope.oxygenFactor = 2.0
         $scope.caveCount = 3
+        $scope.caveWidth = 1;
 
 
         $scope.currentPlayers = {};
@@ -66,7 +67,8 @@
         $scope.createGame = function() {
             $scope.oxygenFactor = $("#oxygenFactor").val()
             $scope.caveCount = $("#caveCount").val()
-            IAConnectorService.createGame($scope.oxygenFactor, $scope.caveCount)
+            $scope.caveWidth = $("#caveWidth").val()
+            IAConnectorService.createGame($scope.oxygenFactor, $scope.caveCount, $scope.caveWidth)
                 .then(function(res) {
                     var game = res.data;
                     console.log("Game is : " + JSON.stringify(game));

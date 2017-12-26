@@ -8,6 +8,10 @@ public class Chest {
 
     private int treasureCount;
 
+    public Chest(){
+
+    }
+
     public Chest(int minTreasureCount, int maxTreasureCount) {
         treasureCount = (int) (Math.random() * (maxTreasureCount - minTreasureCount)) + minTreasureCount;
         name = "Chest " + minTreasureCount + "->" + maxTreasureCount + " treasures";

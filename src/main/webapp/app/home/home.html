@@ -25,13 +25,18 @@
 
         <div class="col-md-6">
             <h1 >Menu:</h1>
+
             <md-input-container>
                 <label>Oxygen Factor</label>
                 <input type="number" ng-model="oxygenFactor" placeholder="oxygenFactor" id="oxygenFactor"/>
-            </md-input-container>f
+            </md-input-container>
             <md-input-container>
                 <label>Cave Count</label>
                 <input type="number" ng-model="caveCount" placeholder="caveCount" id="caveCount"/>
+            </md-input-container>
+            <md-input-container>
+                <label>Cave Width</label>
+                <input type="number" ng-model="caveWidth" placeholder="caveWidth" id="caveWidth"/>
             </md-input-container>
 
 
@@ -41,7 +46,7 @@
             </md-button>
             <md-input-container>
                 <label>Player Name</label>
-                <input ng-model="playerName" placeholder="Player name" id="playerName"
+                <input ng-model="playerName" placehoder="Player name" id="playerName"
                         />
             </md-input-container>
             <md-button class="md-raised md-primary" ng-click="addPlayer()"
@@ -54,19 +59,13 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Game
             </md-button>
 
-            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)"
-                          ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
 
-                <div class="md-list-item-text" layout="column">
-                    <h3>=> Game {{ game }}</h3>
-                </div>
-            </md-list-item>
 
             <div ng-repeat="player in currentGame.players track by $index">
                 {{player.name}} has
                 {{player.treasureCount}} treasures and hold {{player.chestsHolding.length}} chests.
 
-                {{currentGame.currentIdPlayerTurn}}
+
 
                 <div ng-if="$index == currentGame.currentIdPlayerTurn">
                     It's turn of {{player.name}} !
@@ -96,6 +95,14 @@
 
                 </div>
             </div>
+            <br/>
+            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)"
+                          ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
+
+                <div class="md-list-item-text" layout="column">
+                    <h3>=> Game {{ game }}</h3>
+                </div>
+            </md-list-item>
         </div>
 
         <div class="col-md-6" >

@@ -12,6 +12,10 @@ import java.util.UUID;
 @ToString
 public class Player {
 
+    public Player() {
+
+    }
+
     private String uniqueID = UUID.randomUUID().toString();
 
     private String name;
@@ -121,4 +125,6 @@ public class Player {
     public void setCellIndex(Integer cellIndex) {
         this.cellIndex = cellIndex;
     }
+
+
 }

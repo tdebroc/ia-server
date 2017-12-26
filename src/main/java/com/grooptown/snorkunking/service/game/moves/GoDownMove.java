@@ -25,7 +25,7 @@ public class GoDownMove implements Move {
         if (player.getLevelIndex() == null && player.getCaveIndex() == null) {
             player.setLevelIndex(0);
             player.setCaveIndex(0);
-        } else if (player.getLevelIndex() == game.getCaves().get(player.getCaveIndex()).getLastLevelIndex()) {
+        } else if (player.getLevelIndex() == game.getCaves().get(player.getCaveIndex()).findLastLevelIndex()) {
             player.setLevelIndex(0);
             player.setCaveIndex(player.getCaveIndex() + 1);
         } else {

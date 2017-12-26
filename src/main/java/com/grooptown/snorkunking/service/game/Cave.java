@@ -13,6 +13,10 @@ public class Cave {
     private List<Level> levels;
 
 
+    public Cave() {
+
+    }
+
     public Cave(String name, int levelCountMin, int levelCountMax,
                 int minTreasureCount, int maxTreasureCount, int caveWidth) {
         this.name = name;
@@ -39,7 +43,8 @@ public class Cave {
         this.levels = levels;
     }
 
-    public int getLastLevelIndex() {
+    public int findLastLevelIndex() {
         return levels.size() - 1;
     }
+
 }

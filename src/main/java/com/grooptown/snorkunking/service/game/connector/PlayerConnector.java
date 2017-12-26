@@ -7,13 +7,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import  com.grooptown.snorkunking.service.game.Game;
+import java.util.Scanner;
 
+import  com.grooptown.snorkunking.service.game.Game;
+import groovy.transform.ToString;
+
+@ToString
 public class PlayerConnector {
 
 	private int gameId;
 
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://localhost:8080/";
 
     private String playerUUID;
 
@@ -31,12 +35,24 @@ public class PlayerConnector {
 	}
 
 	public static void main(String[] args) throws Exception {
-        PlayerConnector c = new PlayerConnector(4, "http://localhost:8080", "Bob");
-		System.out.println(c.getGame());
+        PlayerConnector c = new PlayerConnector(1, "http://localhost:8080", "Anna");
+		System.out.println(c.getGame().getAsString());
+        System.out.println(c.getPlayerInstance().getUUID());
+
+        while (true) {
+            System.out.println("Waiting opponents to Move:");
+            c.waitOppenentsAndGetTheirMoves();
+            System.out.println("Please enter your move:");
+            Scanner scanner = new Scanner(System.in);
+            String move = scanner.nextLine();
+            c.sendMove(move);
+        }
+
 	}
 
-    public static int addGame(String baseUrl, int gridSize) {
-        return (Integer) sentGetAndDeserialize(baseUrl + "/api/iaconnector/addGame?gridSize=" + gridSize, Integer.class);
+    public static int addGame(String baseUrl, int oxygenFactor, int caveCount, int caveWidth) {
+        return (Integer) sentGetAndDeserialize(baseUrl + "/api/iaconnector/game?oxygenFactor=" + oxygenFactor
+            + "&caveCount=" + caveCount + "&caveWidth=" +caveWidth , Integer.class);
     }
 
     public void registerPlayer(String playerName) {
@@ -54,21 +70,21 @@ public class PlayerConnector {
     }
 
     public Game getGame() {
-        return (Game) sentGetAndDeserialize(baseUrl + "/api/iaconnector/game?idGame=" + gameId, Game.class);
+        return (Game) sentGetAndDeserialize(baseUrl + "/api/iaconnector/game/" + gameId, Game.class);
     }
 
-    public boolean sendMove(char c) {
+    public boolean sendMove(String move) {
         if (playerUUID == null) {
             System.err.println("you have not registered to the game. Please call registerPlayer()");
             return false;
         }
         MessageResponse m = (MessageResponse)sentGetAndDeserialize(
-            baseUrl + "/api/iaconnector/sendMove?playerUUID=" + playerUUID + "&color=" + c, MessageResponse.class);
-        if (m.getError() != null) {
-            System.err.println("Error with the move: " + m.getError());
+            baseUrl + "/api/iaconnector/sendMove?playerUUID=" + playerUUID + "&move=" + move, MessageResponse.class);
+        if (m == null || m.getError() != null) {
+            System.err.println("Error with the move: " + m == null ? "Wrong Move" : m.getError());
             return false;
         } else {
-            System.out.println("Move '"  + c + "' has been played !");
+            System.out.println("Move '"  + move + "' has been played !");
             return true;
         }
     }

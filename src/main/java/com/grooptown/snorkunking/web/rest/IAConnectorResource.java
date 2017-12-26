@@ -4,6 +4,7 @@ import com.grooptown.snorkunking.service.game.Game;
 import com.grooptown.snorkunking.service.game.Message;
 import com.grooptown.snorkunking.service.game.Player;
 import com.grooptown.snorkunking.service.game.PlayerInstance;
+import com.grooptown.snorkunking.service.game.connector.MessageResponse;
 import com.grooptown.snorkunking.service.game.moves.Move;
 import com.grooptown.snorkunking.service.game.moves.MoveManager;
 import com.grooptown.snorkunking.service.game.moves.RecordMove;
@@ -50,8 +51,8 @@ public class IAConnectorResource {
 
     @GetMapping("/game")
     public Game createNewGame(@RequestParam(required = false) Double oxygenFactor,
-                            @RequestParam(required = false) Integer caveCount,
-                            @RequestParam(required = false) Integer caveWidth) {
+                              @RequestParam(required = false) Integer caveCount,
+                              @RequestParam(required = false) Integer caveWidth) {
         int idGame = addGameToGamesMap(oxygenFactor, caveCount, caveWidth);
         refreshGames();
         return gamesMap.get(idGame);
@@ -99,8 +100,8 @@ public class IAConnectorResource {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/sendMove")
-    public ResponseEntity<Message> sendMove(@RequestParam(value = "playerUUID") String playerUUID,
-                                           @RequestParam(value = "move") String moveString) {
+    public ResponseEntity<MessageResponse> sendMove(@RequestParam(value = "playerUUID") String playerUUID,
+                                                    @RequestParam(value = "move") String moveString) {
         System.out.println(playerUUID);
         PlayerInstance playerInstance = playersInstances.get(playerUUID);
         System.out.println(playerInstance);
@@ -148,22 +149,31 @@ public class IAConnectorResource {
         }
         Game game = gamesMap.get(playerInstance.getIdGame());
         int timeRequest = 0;
-        while (game.getCurrentIdPlayerTurn() != playerInstance.getIdPlayer() || !game.isStarted()) {
-
-            Thread.sleep(100);
-            timeRequest += 100;
-            if (timeRequest > 60 * 1000 * 10) {
-                return null;
+        try {
+            while (game.getCurrentIdPlayerTurn() != playerInstance.getIdPlayer() || !game.isStarted()) {
+                int sleepDuration = 100;
+                // System.out.println("Sleeping for " + sleepDuration + "ms");
+                try {
+                    Thread.sleep(sleepDuration);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // restore interrupted status
+                }
+                timeRequest += sleepDuration;
+                if (timeRequest > 60 * 1000 * 10) {
+                    return null;
+                }
             }
+        } catch (RuntimeException e) {
+            System.out.println("Run time catched for " + e + "");
         }
         return new ResponseEntity<>(game, HttpStatus.OK);
     }
 
     public int addGameToGamesMap(Double oxygenFactor, Integer caveCount, Integer caveWidth) {
-        System.out.println("oxygenFactor=" + oxygenFactor + " and caveCount=" +caveCount);
+        System.out.println("oxygenFactor=" + oxygenFactor + " and caveCount=" + caveCount);
         Game game = new Game(oxygenFactor == null ? 2.0 : oxygenFactor,
-                            caveCount == null ? 3 : caveCount,
-                            caveWidth == null ? 1 : caveWidth);
+            caveCount == null ? 3 : caveCount,
+            caveWidth == null ? 1 : caveWidth);
         int newLyGameId = NEXT_GAME_ID;
         game.setIdGame(newLyGameId);
         gamesMap.put(newLyGameId, game);
@@ -171,12 +181,12 @@ public class IAConnectorResource {
         return newLyGameId;
     }
 
-    public ResponseEntity<Message> sendBadRequest(String message) {
-        return new ResponseEntity<>(new Message(message), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<MessageResponse> sendBadRequest(String message) {
+        return new ResponseEntity<>(new MessageResponse(message, null), HttpStatus.OK);
     }
 
-    public ResponseEntity<Message> sendValidResponse(String message) {
-        return new ResponseEntity<>(new Message(message), HttpStatus.OK);
+    public ResponseEntity<MessageResponse> sendValidResponse(String message) {
+        return new ResponseEntity<>(new MessageResponse(null, message), HttpStatus.OK);
     }
 
     //==================================================================================================================
@@ -187,10 +197,10 @@ public class IAConnectorResource {
             messagingTemplate.convertAndSend("/topic/refreshGames", getGames());
         }
     }
+
     private void refreshGame(Game game) {
         messagingTemplate.convertAndSend("/topic/refreshGame", game);
     }
-
 
 
 }
