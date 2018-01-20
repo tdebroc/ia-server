@@ -1,7 +1,6 @@
 package com.grooptown.snorkunking.web.rest;
 
 import com.grooptown.snorkunking.service.game.Game;
-import com.grooptown.snorkunking.service.game.Message;
 import com.grooptown.snorkunking.service.game.Player;
 import com.grooptown.snorkunking.service.game.PlayerInstance;
 import com.grooptown.snorkunking.service.game.connector.MessageResponse;
@@ -14,11 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.grooptown.snorkunking.service.game.moves.MoveManager.getNextMove;
 
@@ -34,7 +37,7 @@ public class IAConnectorResource {
 
     public static Map<Integer, Game> gamesMap = new HashMap<>();
 
-    public static int NEXT_GAME_ID = 1;
+    public static int NEXT_GAME_ID = getNextGameIdFromFile();
 
     public static Map<String, PlayerInstance> playersInstances = new HashMap<>();
 
@@ -44,7 +47,7 @@ public class IAConnectorResource {
 
     @GetMapping("/init")
     public void init() {
-        NEXT_GAME_ID = 1;
+        NEXT_GAME_ID = getNextGameIdFromFile();
         gamesMap = new HashMap<>();
         createNewGame(2.0, 3, 3);
     }
@@ -178,6 +181,7 @@ public class IAConnectorResource {
         game.setIdGame(newLyGameId);
         gamesMap.put(newLyGameId, game);
         NEXT_GAME_ID++;
+        saveNextGameId(NEXT_GAME_ID);
         return newLyGameId;
     }
 
@@ -187,6 +191,34 @@ public class IAConnectorResource {
 
     public ResponseEntity<MessageResponse> sendValidResponse(String message) {
         return new ResponseEntity<>(new MessageResponse(null, message), HttpStatus.OK);
+    }
+
+    //==========================================================================================
+    //= Persit
+    //==========================================================================================
+
+    private static String lastGameIdFile = "lastGameId.txt";
+
+    private static Integer getNextGameIdFromFile() {
+        try {
+            String collect = Files.lines(Paths.get(lastGameIdFile)).collect(Collectors.toList())
+                .get(0);
+            return Integer.parseInt(collect);
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    private void saveNextGameId(int nextGameId) {
+        try {
+            File file = new File(lastGameIdFile);
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("" + nextGameId);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //==================================================================================================================
@@ -201,6 +233,8 @@ public class IAConnectorResource {
     private void refreshGame(Game game) {
         messagingTemplate.convertAndSend("/topic/refreshGame", game);
     }
+
+
 
 
 }
