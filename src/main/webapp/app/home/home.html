@@ -107,9 +107,38 @@
 
         <div class="col-md-6" >
             <div style="margin: 10px; ">
-                <h3>=> Game {{ currentIdGame }}</h3>
-                <p style="white-space: pre;font-family: Courier;">{{ currentGame.asString }}</p>
+                <h3>=> Game {{ currentIdGame }} - Stage {{ currentGame.currentStageIndex + 1 }}</h3>
 
+                <div style="padding: 5px;height: 60px;position: relative;">
+                    <img src="content/images/oxygen_bottle2.svg" width="50" style="position: absolute;"/>
+                    <span class="oxygenText">{{ currentGame.currentStage.oxygen }}</span>
+                </div>
+                <div>
+                    <span ng-repeat="player in getPlayersAtSurface()">
+                        <img ng-src="{{'content/images/diver' + (player.index %2) + '.svg'}}" width="40"/>
+                        ({{player.name}})
+                    </span>
+                </div>
+                <table>
+                    <tbody ng-repeat="cave in currentGame.caves track by $index"
+                           ng-class="$index % 2 == 1 ? 'odd' : 'even'">
+                        <tr ng-repeat="level in cave.levels track by $index">
+
+                            <td ng-repeat="cell in level.cells track by $index">
+
+                                <div ng-repeat="chest in cell.chests" class="chestContainer">
+                                    <img src="content/images/chest.svg" width="40"/>
+                                    <span>{{chest.treasureCount}}</span>
+                                </div>
+                                <div ng-repeat="player in getPlayersInCell($index, $parent.$index, $parent.$parent.$index)">
+                                    <img ng-src="{{'content/images/diver' + (player.index %2) + '.svg'}}" width="40"/>
+                                    ({{player.name}})
+                                </div>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -117,3 +146,37 @@
 <md-button class="md-raised md-warn" ng-click="reboot()">
     Erase all games in server + current client.
 </md-button>
+
+<style>
+    tbody.odd {
+        background-color: lightgrey;
+    }
+    td {
+        border: grey 1px solid;
+        padding: 4px;
+        min-width: 100px;
+    }
+     .oxygenText {
+        position: absolute;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        color: white;
+        top: 17px;
+        left: 18px;
+        font-size: 23px;
+    }
+    .chestContainer {
+        position: relative;
+        height: 50px;
+    }
+    .chestContainer img {
+        position: absolute;
+    }
+    .chestContainer span {
+        position: absolute;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        color: white;
+        top: 15px;
+        left: 15px;
+        font-size: 21px;
+    }
+</style>

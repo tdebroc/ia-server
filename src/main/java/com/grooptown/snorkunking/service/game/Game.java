@@ -25,8 +25,6 @@ public class Game {
 
     private boolean isFinished;
 
-    private int oxygen = 3;
-
     private int caveCount = 3;
 
     private int caveWidth;
@@ -39,7 +37,7 @@ public class Game {
 
     private List<RecordMove> moveList = new ArrayList<>();
 
-    int currentStageIndex = 0;
+    private int currentStageIndex = 0;
 
     private List<Player> leaderboard;
 
@@ -341,5 +339,13 @@ public class Game {
 
     public void setStages(List<Stage> stages) {
         this.stages = stages;
+    }
+
+    public int getCurrentStageIndex() {
+        return currentStageIndex;
+    }
+
+    public void setCurrentStageIndex(int currentStageIndex) {
+        this.currentStageIndex = currentStageIndex;
     }
 }

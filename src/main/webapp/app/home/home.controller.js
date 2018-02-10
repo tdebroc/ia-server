@@ -165,6 +165,32 @@
         }
 
 
+        $scope.getPlayersInCell = function(cellIndex, levelIndex, caveIndex) {
+            var playersInCell = []
+            for (var i = 0; i < $scope.currentGame.players.length; i++) {
+                var player = $scope.currentGame.players[i]
+                if (player.caveIndex == caveIndex && player.levelIndex == levelIndex &&
+                        player.cellIndex == cellIndex) {
+                    player.index = i;
+                    playersInCell.push(player)
+                }
+            }
+            return playersInCell;
+        }
+
+        $scope.getPlayersAtSurface = function() {
+            var playersAtSurface = []
+            if (!$scope.currentGame) return []
+            for (var i = 0; i < $scope.currentGame.players.length; i++) {
+                var player = $scope.currentGame.players[i];
+                if (player.caveIndex == null && player.levelIndex == null) {
+                    player.index = i;
+                    playersAtSurface.push(player)
+                }
+            }
+            return playersAtSurface;
+        }
+
     }
 
 
