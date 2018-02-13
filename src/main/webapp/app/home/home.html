@@ -109,6 +109,12 @@
             <div style="margin: 10px; ">
                 <h3>=> Game {{ currentIdGame }} - Stage {{ currentGame.currentStageIndex + 1 }}</h3>
 
+                <div ng-if="currentGame.finished">
+                    <div ng-repeat="player in currentGame.leaderboard">
+                        {{ $index + 1}}. ({{player.name}}) <span ng-if="$index == 0">Winner !</span>
+                    </div>
+                </div>
+
                 <div style="padding: 5px;height: 60px;position: relative;">
                     <img src="content/images/oxygen_bottle2.svg" width="50" style="position: absolute;"/>
                     <span class="oxygenText">{{ currentGame.currentStage.oxygen }}</span>
@@ -143,9 +149,7 @@
         </div>
     </div>
 </div>
-<md-button class="md-raised md-warn" ng-click="reboot()">
-    Erase all games in server + current client.
-</md-button>
+
 
 <style>
     tbody.odd {
