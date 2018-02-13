@@ -1,5 +1,6 @@
 package com.grooptown.snorkunking.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.grooptown.snorkunking.service.game.Game;
 import com.grooptown.snorkunking.service.game.Player;
 import com.grooptown.snorkunking.service.game.PlayerInstance;
@@ -104,7 +105,7 @@ public class IAConnectorResource {
 
     @RequestMapping(method = RequestMethod.GET, value = "/sendMove")
     public ResponseEntity<MessageResponse> sendMove(@RequestParam(value = "playerUUID") String playerUUID,
-                                                    @RequestParam(value = "move") String moveString) {
+                                                    @RequestParam(value = "move") String moveString) throws JsonProcessingException {
         System.out.println(playerUUID);
         PlayerInstance playerInstance = playersInstances.get(playerUUID);
         System.out.println(playerInstance);
@@ -141,6 +142,9 @@ public class IAConnectorResource {
         game.getMoveList().add(recordMove);
         game.getCurrentStage().prepareMove(game);
         refreshGame(game);
+        if (game.isFinished()) {
+            writeToFile("game" + game.getIdGame(), game.asJson());
+        }
         return sendValidResponse("OK");
     }
 
@@ -210,10 +214,14 @@ public class IAConnectorResource {
     }
 
     private void saveNextGameId(int nextGameId) {
+        writeToFile(lastGameIdFile, "" + nextGameId);
+    }
+
+    public void writeToFile(String fileName, String content) {
         try {
-            File file = new File(lastGameIdFile);
+            File file = new File(fileName);
             FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write("" + nextGameId);
+            fileWriter.write(content);
             fileWriter.flush();
             fileWriter.close();
         } catch (IOException e) {

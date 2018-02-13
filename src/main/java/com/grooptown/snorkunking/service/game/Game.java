@@ -3,6 +3,8 @@ package com.grooptown.snorkunking.service.game;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grooptown.snorkunking.service.game.moves.RecordMove;
 import groovy.transform.ToString;
 
@@ -347,5 +349,9 @@ public class Game {
 
     public void setCurrentStageIndex(int currentStageIndex) {
         this.currentStageIndex = currentStageIndex;
+    }
+
+    public String asJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(this);
     }
 }
