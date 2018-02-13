@@ -67,11 +67,11 @@
 
 
 
-                <div ng-if="$index == currentGame.currentIdPlayerTurn">
+                <div ng-if="$index == currentGame.currentIdPlayerTurn && !currentGame.finished">
                     It's turn of {{player.name}} !
                 </div>
 
-                <div ng-if="$index == currentGame.currentIdPlayerTurn && isCurrentPlayer(currentGame.idGame, currentGame.currentIdPlayerTurn)">
+                <div ng-if="$index == currentGame.currentIdPlayerTurn && isCurrentPlayer(currentGame.idGame, currentGame.currentIdPlayerTurn)  && !currentGame.finished">
 
                     It's your Turn !
                     Choose your action:
