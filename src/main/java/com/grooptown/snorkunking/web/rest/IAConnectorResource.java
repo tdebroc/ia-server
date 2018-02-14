@@ -158,7 +158,7 @@ public class IAConnectorResource {
         int timeRequest = 0;
         try {
             while (game.getCurrentIdPlayerTurn() != playerInstance.getIdPlayer() || !game.isStarted()) {
-                int sleepDuration = 100;
+                int sleepDuration = 1000;
                 // System.out.println("Sleeping for " + sleepDuration + "ms");
                 try {
                     Thread.sleep(sleepDuration);
